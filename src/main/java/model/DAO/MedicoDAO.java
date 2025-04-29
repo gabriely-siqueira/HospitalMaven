@@ -68,7 +68,6 @@ public class MedicoDAO {
             stmtMedico.setString(10, medico.getCidade());
             stmtMedico.setString(11, medico.getBairro());
             stmtMedico.setString(12, medico.getLogradouro());
-            System.out.println("Salvando complemento na tabela medico: " + medico.getComplemento());
             stmtMedico.setString(13, medico.getComplemento());
             stmtMedico.setString(14, medico.getCrm());
             stmtMedico.setString(15, medico.getSenha());
@@ -101,40 +100,41 @@ public class MedicoDAO {
     }
 
     public List<Medico> retrieve() {
-        List<Medico> medicos = new ArrayList<>();
-        String sql = "SELECT * FROM medico";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+    List<Medico> medicos = new ArrayList<>();
+    String sql = "SELECT * FROM medico";
+    try (Connection conn = ConnectionFactory.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
 
-            while (rs.next()) {
-                Medico medico = new Medico();
-                medico.setId(rs.getInt("id"));
-                medico.setNome(rs.getString("nome"));
-                medico.setFone1(rs.getString("fone1"));
-                medico.setFone2(rs.getString("fone2"));
-                medico.setEmail(rs.getString("email"));
-                medico.setCpfCnpj(rs.getString("cpfCnpj"));
-                medico.setRgInscricaoEstadual(rs.getString("rgInscricaoEstadual"));
-                medico.setDataCadastro(rs.getString("dataCadastro"));
-                medico.setCep(rs.getString("cep"));
-                medico.setCidade(rs.getString("cidade"));
-                String bairro = rs.getString("bairro");
-                medico.setBairro(bairro != null ? bairro : "");
-                medico.setLogradouro(rs.getString("logradouro"));
-                String complemento = rs.getString("complemento");
-                medico.setComplemento(complemento);
-                medico.setCrm(rs.getString("crm"));
-                medico.setSenha(rs.getString("senha"));
-                medico.setLogin(rs.getString("login"));
-                medicos.add(medico);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao recuperar médicos", e);
+        while (rs.next()) {
+            Medico medico = new Medico();
+            medico.setId(rs.getInt("id"));
+            medico.setNome(rs.getString("nome"));
+            medico.setFone1(rs.getString("fone1"));
+            medico.setFone2(rs.getString("fone2"));
+            medico.setEmail(rs.getString("email"));
+            medico.setCpfCnpj(rs.getString("cpfCnpj"));
+            medico.setRgInscricaoEstadual(rs.getString("rgInscricaoEstadual"));
+            medico.setDataCadastro(rs.getString("dataCadastro"));
+            medico.setCep(rs.getString("cep"));
+            medico.setCidade(rs.getString("cidade"));
+            String bairro = rs.getString("bairro");
+            medico.setBairro(bairro != null ? bairro : "");
+            String logradouro = rs.getString("logradouro");
+            medico.setLogradouro(logradouro);
+            String complemento = rs.getString("complemento");
+            medico.setComplemento(complemento);
+            medico.setCrm(rs.getString("crm"));
+            medico.setSenha(rs.getString("senha"));
+            medico.setLogin(rs.getString("login"));
+            medicos.add(medico);
         }
-        return medicos;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new RuntimeException("Erro ao recuperar médicos", e);
     }
+    return medicos;
+}
 
     public Medico retrieve(int id) {
         Medico medico = null;

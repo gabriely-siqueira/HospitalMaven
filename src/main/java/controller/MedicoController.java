@@ -2,6 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import model.Medico;
 import service.ServiceMedico;
@@ -55,6 +57,11 @@ public class MedicoController implements ActionListener {
             medico.setBairro(this.medicoForm.getBairro().getText());
             medico.setComplemento(this.medicoForm.getComplemento().getText());
             medico.setLogradouro(this.medicoForm.getLogradouro1().getText());
+            
+            // Definir a data de cadastro automaticamente
+            LocalDate dataAtual = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            medico.setDataCadastro(dataAtual.format(formatter));
             
 
             if (this.medicoForm.getIdField().getText().equals("")) {

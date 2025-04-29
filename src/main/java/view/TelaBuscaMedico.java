@@ -125,14 +125,34 @@ public class TelaBuscaMedico extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Id", "Nome", "CRM", "Login", "Senha", "Email", "Fone 1", "Fone 2", "CPF", "RG", "CEP", "Cidade", "Bairro", "Logradouro", "Complemento", "Data de Cadastro"
+                "Id", "Nome", "CRM", "Login", "Senha", "Email", "CPF", "RG", "CEP", "Cidade", "Bairro", "Logradouro", "Complemento", "Fone 1", "Fone 2", "Data de Cadastro"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jTableDados);
         if (jTableDados.getColumnModel().getColumnCount() > 0) {
-            jTableDados.getColumnModel().getColumn(0).setMaxWidth(40);
-            jTableDados.getColumnModel().getColumn(14).setMinWidth(100);
-            jTableDados.getColumnModel().getColumn(15).setMinWidth(100);
+            jTableDados.getColumnModel().getColumn(0).setResizable(false);
+            jTableDados.getColumnModel().getColumn(1).setResizable(false);
+            jTableDados.getColumnModel().getColumn(2).setResizable(false);
+            jTableDados.getColumnModel().getColumn(3).setResizable(false);
+            jTableDados.getColumnModel().getColumn(4).setResizable(false);
+            jTableDados.getColumnModel().getColumn(5).setResizable(false);
+            jTableDados.getColumnModel().getColumn(6).setResizable(false);
+            jTableDados.getColumnModel().getColumn(7).setResizable(false);
+            jTableDados.getColumnModel().getColumn(8).setResizable(false);
+            jTableDados.getColumnModel().getColumn(9).setResizable(false);
+            jTableDados.getColumnModel().getColumn(10).setResizable(false);
+            jTableDados.getColumnModel().getColumn(11).setResizable(false);
+            jTableDados.getColumnModel().getColumn(12).setResizable(false);
+            jTableDados.getColumnModel().getColumn(13).setResizable(false);
+            jTableDados.getColumnModel().getColumn(15).setResizable(false);
         }
 
         javax.swing.GroupLayout jPanelDadosLayout = new javax.swing.GroupLayout(jPanelDados);

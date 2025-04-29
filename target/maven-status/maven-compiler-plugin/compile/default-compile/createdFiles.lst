@@ -32,6 +32,7 @@ view\ReceitaForm$3.class
 controller\ControllerBuscaMedicamento.class
 controller\LaboratorioController.class
 model\DAO\PacienteDAO.class
+view\TelaBuscaMedico$6$1.class
 view\ConsultaForm$5.class
 model\DAO\ReceitaDAO.class
 view\TelaBuscaAla$4$1.class
@@ -152,6 +153,7 @@ view\UsuarioForm$5$1.class
 view\ConsultaExameForm$5.class
 view\EnfermeiroForm$2.class
 view\CadastrosView$9.class
+view\TelaBuscaMedico$6.class
 view\UsuarioForm$2.class
 view\TelaBuscaExame$3.class
 view\EnfermeiroForm$1.class
@@ -337,7 +339,6 @@ view\ConsultaForm$4.class
 model\Receita.class
 view\PessoaForm$2.class
 view\TelaBuscaAla$2.class
-view\TelaBuscaMedico$5$1.class
 model\Lote.class
 view\ReceitaForm$6.class
 model\LaboratorioMedicamento.class
