@@ -49,6 +49,7 @@ public class MedicoController implements ActionListener {
             medico.setSenha(this.medicoForm.getSenha().getText());
             medico.setLogin(this.medicoForm.getLogin().getText());
             medico.setFone1(this.medicoForm.getTelefoneMedico().getText());
+            medico.setFone2(this.medicoForm.getTelefoneMedico2().getText());
             medico.setEmail(this.medicoForm.getEmail().getText());
             medico.setCpfCnpj(this.medicoForm.getCpfMedico().getText());
             medico.setRgInscricaoEstadual(this.medicoForm.getRgMedico().getText());
@@ -94,6 +95,7 @@ public class MedicoController implements ActionListener {
                 this.medicoForm.getSenha().setText(medico.getSenha());
                 this.medicoForm.getLogin().setText(medico.getLogin());
                 this.medicoForm.getTelefoneMedico().setText(medico.getFone1());
+                this.medicoForm.getTelefoneMedico2().setText(medico.getFone2());
                 this.medicoForm.getEmail().setText(medico.getEmail());
                 this.medicoForm.getCpfMedico().setText(medico.getCpfCnpj());
                 this.medicoForm.getRgMedico().setText(medico.getRgInscricaoEstadual());
