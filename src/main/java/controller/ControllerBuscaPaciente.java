@@ -27,8 +27,7 @@ public class ControllerBuscaPaciente implements ActionListener {
 
         if (evento.getSource() == this.telaBuscaPaciente.getjButtonCarregar()) {
             if (this.telaBuscaPaciente.getjTableDados().getSelectedRow() != -1) {
-                // Carrega o médico selecionado, independentemente do status
-                MedicoController.codigo = (int) this.telaBuscaPaciente.getjTableDados()
+                PacienteController.codigo = (int) this.telaBuscaPaciente.getjTableDados()
                         .getValueAt(this.telaBuscaPaciente.getjTableDados().getSelectedRow(), 0);
                 this.telaBuscaPaciente.dispose();
             } else {

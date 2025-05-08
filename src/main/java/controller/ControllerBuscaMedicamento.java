@@ -46,14 +46,14 @@ public class ControllerBuscaMedicamento implements ActionListener {
             if (idFiltro.isEmpty()) {
                 for (Medicamento objetoAtualDaLista : service.ServiceMedicamento.ler()) {
                     tabela.addRow(new Object[]{objetoAtualDaLista.getId(), objetoAtualDaLista.getDescricaoMedicamento(),
-                            objetoAtualDaLista.getPrincipioAtivo(), objetoAtualDaLista.getStatus()});
+                            objetoAtualDaLista.getPrincipioAtivo(),objetoAtualDaLista.getQtdMinima(), objetoAtualDaLista.getStatus()});
                 }
             } else {
                 int id = Integer.parseInt(idFiltro);
                 Medicamento medicamento = service.ServiceMedicamento.ler(id);
                 if (medicamento != null) {
                     tabela.addRow(new Object[]{medicamento.getId(), medicamento.getDescricaoMedicamento(),
-                            medicamento.getPrincipioAtivo(), medicamento.getStatus()});
+                            medicamento.getPrincipioAtivo(),medicamento.getQtdMinima(), medicamento.getStatus()});
                 } else {
                     JOptionPane.showMessageDialog(null, "Nenhum medicamento encontrado com esse ID.");
                 }
@@ -81,7 +81,7 @@ public class ControllerBuscaMedicamento implements ActionListener {
                     tabela.setRowCount(0);
                     for (Medicamento objetoAtualDaLista : service.ServiceMedicamento.ler()) {
                         tabela.addRow(new Object[]{objetoAtualDaLista.getId(), objetoAtualDaLista.getDescricaoMedicamento(),
-                                objetoAtualDaLista.getPrincipioAtivo(), objetoAtualDaLista.getStatus()});
+                                objetoAtualDaLista.getPrincipioAtivo(),objetoAtualDaLista.getQtdMinima(), objetoAtualDaLista.getStatus()});
                     }
                 }
             } else {
