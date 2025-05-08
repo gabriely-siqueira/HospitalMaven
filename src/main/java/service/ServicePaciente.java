@@ -1,42 +1,32 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package service;
 
 import java.util.List;
 import model.DAO.PacienteDAO;
 import model.Paciente;
 
-/**
- *
- * @author gabriely
- */
-public class ServicePaciente {
-    
+
+
+public class ServicePaciente{
     public static void adicionar(Paciente objeto) {
-        PacienteDAO pacienteDAO = new PacienteDAO();
-        pacienteDAO.create(objeto);
+        PacienteDAO.getInstance().create(objeto);
     }
 
     public static List<Paciente> ler() {
-        PacienteDAO pacienteDAO = new PacienteDAO();
-        return pacienteDAO.retrieve();
+        return PacienteDAO.getInstance().retrieve();
     }
 
     public static Paciente ler(int PK) {
-        PacienteDAO pacienteDAO = new PacienteDAO();
-        return pacienteDAO.retrieve(PK);
+        return PacienteDAO.getInstance().retrieve(PK);
     }
 
-    public static List<Paciente> ler(String parametro, String atributo) {
-        PacienteDAO pacienteDAO = new PacienteDAO();
-        return pacienteDAO.retrieve(parametro, atributo);
+    public static void atualizar(Paciente objeto) {
+        PacienteDAO.getInstance().update(objeto);
     }
-    
-    public static void atualizar(Paciente objeto){
-        PacienteDAO pacienteDAO = new PacienteDAO();
-        pacienteDAO.update(objeto);
-    }
+
+    // Método de exclusão
+    public static void excluir(int id) {
+        PacienteDAO.getInstance().delete(id);
+    };
+
 
 }

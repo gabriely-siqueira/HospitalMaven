@@ -4,21 +4,21 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "pacientes")
+@Table(name = "paciente")
 public class Paciente extends Pessoa implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "tipo_sanguineo", length = 3)
+    
+    @Column 
     private String tipoSanguineo;
 
-    @Column(length = 1)
-    private String sexo;
-
-    @Column(name = "nome_social", length = 100)
-    private String nomeSocial;
+    @Column
+    private String sexo;    
+    
+    @Column
+    private String nome;
 
 
     public Paciente() {
@@ -28,12 +28,12 @@ public class Paciente extends Pessoa implements Serializable {
     public Paciente(int id, String nome, String fone1, String fone2, String email, 
                    String cpfCnpj, String rgInscricaoEstadual, String dataCadastro, 
                    String cep, String cidade, String bairro, String logradouro, 
-                   String complemento, String tipoSanguineo, String sexo, String nomeSocial) {
+                   String complemento, String tipoSanguineo, String sexo) {
         super(nome, fone1, fone2, email, cpfCnpj, rgInscricaoEstadual, 
               dataCadastro, cep, cidade, bairro, logradouro, complemento);
+        this.id = id;
         this.tipoSanguineo = tipoSanguineo;
         this.sexo = sexo;
-        this.nomeSocial = nomeSocial;
     }
 
     // Getters e Setters
@@ -53,12 +53,12 @@ public class Paciente extends Pessoa implements Serializable {
         this.sexo = sexo;
     }
 
-    public String getNomeSocial() {
-        return nomeSocial;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeSocial(String nomeSocial) {
-        this.nomeSocial = nomeSocial;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public int getId() {
@@ -68,14 +68,23 @@ public class Paciente extends Pessoa implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    
 
     @Override
     public String toString() {
-        return "Paciente \n" +
-               super.toString() + 
-               "  Tipo Sanguíneo: '" + tipoSanguineo + "',\n" +
-               "  Sexo: '" + sexo + "',\n" +
-               "  Nome Social: '" + nomeSocial + "'\n";
+        return "Paciente{" +
+               "id=" + id +
+               ", nome=" + getNome() +
+               ", fone=" + getFone1() +
+               ", email=" + getEmail() +
+               ", cpf=" + getCpfCnpj() +
+               ", rg=" + getRgInscricaoEstadual() +
+               ", cep=" + getCep() +
+               ", cidade=" + getCidade() +
+               ", bairro=" + getBairro() +
+               ", logradouro=" + getLogradouro() +
+               ", complemento=" + getComplemento() +
+               ", tipoSanguineo=" + tipoSanguineo +
+               ", sexo=" + sexo +
+               '}';
     }
 }

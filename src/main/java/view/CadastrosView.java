@@ -7,6 +7,7 @@ package view;
 import com.mycompany.projetohospitalmaven.ProjetoHospitalMaven;
 import controller.AcompanhanteController;
 import controller.MedicoController;
+import controller.PacienteController;
 import controller.UsuarioController;
 
 
@@ -155,7 +156,9 @@ public class CadastrosView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btCadastroPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastroPacienteActionPerformed
-      new PacienteForm().setVisible(true);
+        PacienteForm paciente = new PacienteForm(null, true);
+        PacienteController pacienteController = new PacienteController(paciente);
+       paciente.setVisible(true);
     }//GEN-LAST:event_btCadastroPacienteActionPerformed
 
     private void btCadastroUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCadastroUsuarioActionPerformed

@@ -25,8 +25,8 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jPanelDados" max="32767" attributes="0"/>
-          <Component id="jPaneltitulo" alignment="0" max="32767" attributes="0"/>
           <Component id="jPanelFiltros" alignment="0" max="32767" attributes="0"/>
+          <Component id="jPaneltitulo" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

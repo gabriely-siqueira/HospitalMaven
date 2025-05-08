@@ -63,9 +63,11 @@ C:\ProjetoHospitalMaven\src\main\java\view\LaboratorioForm.java
 C:\ProjetoHospitalMaven\src\main\java\service\ServiceLaboratorio.java
 C:\ProjetoHospitalMaven\src\main\java\view\CadastrosView.java
 C:\ProjetoHospitalMaven\src\main\java\model\DAO\ReceitaDAO.java
+C:\ProjetoHospitalMaven\src\main\java\controller\PacienteController.java
 C:\ProjetoHospitalMaven\src\main\java\model\DAO\FarmaceuticoDAO.java
 C:\ProjetoHospitalMaven\src\main\java\controller\AcompanhanteController.java
 C:\ProjetoHospitalMaven\src\main\java\view\QuartoForm.java
+C:\ProjetoHospitalMaven\src\main\java\controller\ControllerBuscaPaciente.java
 C:\ProjetoHospitalMaven\src\main\java\service\ServiceExame.java
 C:\ProjetoHospitalMaven\src\main\java\view\UsuarioForm.java
 C:\ProjetoHospitalMaven\src\main\java\model\DAO\ProntuarioDAO.java
@@ -106,6 +108,7 @@ C:\ProjetoHospitalMaven\src\main\java\service\ServiceAcompanhante.java
 C:\ProjetoHospitalMaven\src\main\java\controller\ExameController.java
 C:\ProjetoHospitalMaven\src\main\java\model\Internacao.java
 C:\ProjetoHospitalMaven\src\main\java\service\ServiceProntuario.java
+C:\ProjetoHospitalMaven\src\main\java\view\TelaBuscaPaciente.java
 C:\ProjetoHospitalMaven\src\main\java\model\Medicamento.java
 C:\ProjetoHospitalMaven\src\main\java\controller\AlaController.java
 C:\ProjetoHospitalMaven\src\main\java\model\DAO\AcompanhanteDAO.java

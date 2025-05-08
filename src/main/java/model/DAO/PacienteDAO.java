@@ -1,159 +1,248 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model.DAO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import model.Paciente;
 
-/**
- *
- * @author gabriely
- */
-public class PacienteDAO implements InterfaceDAO<Paciente> {
+public class PacienteDAO {
 
-    @Override
-    public void create(Paciente objeto) {
-        Connection conexao = ConnectionFactory.getConnection();
-        PreparedStatement pstm = null;
+    private static PacienteDAO instance;
+
+    public static PacienteDAO getInstance() {
+        if (instance == null) {
+            instance = new PacienteDAO();
+        }
+        return instance;
+    }
+
+    public void create(Paciente paciente) {
+        String sqlPessoa = "INSERT INTO pessoa (nomeCompleto, cpf, rg, telefone, endereco, complemento) " +
+                           "VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlPaciente = "INSERT INTO paciente (id, nome, tipoSanguineo, sexo, cpfCnpj, rgInscricaoEstadual, fone1, fone2, " +
+                             "email, cep, cidade, bairro, logradouro, complemento, dataCadastro) " +
+                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement stmtPessoa = null;
+        PreparedStatement stmtPaciente = null;
 
         try {
-            String sqlInstrucao = "Insert Into paciente ("
-                    + "tipoSanguineo,"
-                    + "sexo,"
-                    + "nomeSocial) "
-                    + "Values(?,?,?) ";
+            conn = ConnectionFactory.getConnection();
+            conn.setAutoCommit(false);
 
-            pstm = conexao.prepareStatement(sqlInstrucao);
-            pstm.setString(1, objeto.getTipoSanguineo());
-            pstm.setString(2, objeto.getSexo());
-            pstm.setString(3, objeto.getNomeSocial());
-            pstm.execute();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            // Formatação do endereço
+            String endereco = String.format("%s, %s, %s, CEP: %s",
+                paciente.getLogradouro() != null ? paciente.getLogradouro() : "",
+                paciente.getBairro() != null ? paciente.getBairro() : "",
+                paciente.getCidade() != null ? paciente.getCidade() : "",
+                paciente.getCep() != null ? paciente.getCep() : "");
+
+            // Inserção de dados na tabela pessoa
+            stmtPessoa = conn.prepareStatement(sqlPessoa, Statement.RETURN_GENERATED_KEYS);
+            stmtPessoa.setString(1, paciente.getNome());
+            stmtPessoa.setString(2, paciente.getCpfCnpj());
+            stmtPessoa.setString(3, paciente.getRgInscricaoEstadual());
+            stmtPessoa.setString(4, paciente.getFone1());
+            stmtPessoa.setString(5, endereco);
+            stmtPessoa.setString(6, paciente.getComplemento());
+            stmtPessoa.executeUpdate();
+
+            int idPessoa;
+            try (ResultSet generatedKeys = stmtPessoa.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    idPessoa = generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Falha ao obter o ID da pessoa.");
+                }
+            }
+
+            // Inserção de dados na tabela paciente
+            stmtPaciente = conn.prepareStatement(sqlPaciente);
+            stmtPaciente.setInt(1, idPessoa);
+            stmtPaciente.setString(2, paciente.getNome());
+            stmtPaciente.setString(3, paciente.getTipoSanguineo());
+            stmtPaciente.setString(4, paciente.getSexo());
+            stmtPaciente.setString(5, paciente.getCpfCnpj());
+            stmtPaciente.setString(6, paciente.getRgInscricaoEstadual());
+            stmtPaciente.setString(7, paciente.getFone1());
+            stmtPaciente.setString(8, paciente.getFone2());
+            stmtPaciente.setString(9, paciente.getEmail());
+            stmtPaciente.setString(10, paciente.getCep());
+            stmtPaciente.setString(11, paciente.getCidade());
+            stmtPaciente.setString(12, paciente.getBairro());
+            stmtPaciente.setString(13, paciente.getLogradouro());
+            stmtPaciente.setString(14, paciente.getComplemento());
+            stmtPaciente.setString(15, paciente.getDataCadastro());
+            stmtPaciente.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao cadastrar paciente", e);
         } finally {
-            ConnectionFactory.closeConnection(conexao, pstm, null);
+            try {
+                if (stmtPessoa != null) stmtPessoa.close();
+                if (stmtPaciente != null) stmtPaciente.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    @Override
     public List<Paciente> retrieve() {
-        Connection conexao = ConnectionFactory.getConnection();
-        PreparedStatement pstm = null;
-        ResultSet resultado = null;
-        List<Paciente> listaPaciente = new ArrayList<>();
+        List<Paciente> pacientes = new ArrayList<>();
+        String sql = "SELECT * FROM paciente";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        String sqlInstrucao = "Select id, tipoSanguineo, sexo, nomeSocial "
-                + "From paciente";
-
-        try {
-            pstm = conexao.prepareStatement(sqlInstrucao);
-            resultado = pstm.executeQuery();
-            while (resultado.next()) {
+            while (rs.next()) {
                 Paciente paciente = new Paciente();
-                paciente.setId(resultado.getInt("id"));
-                paciente.setTipoSanguineo(resultado.getString("tipoSanguineo"));
-                paciente.setSexo(resultado.getString("sexo"));
-                paciente.setNomeSocial(resultado.getString("nomeSocial"));
-                listaPaciente.add(paciente);
+                paciente.setId(rs.getInt("id"));
+                paciente.setNome(rs.getString("nome"));
+                paciente.setTipoSanguineo(rs.getString("tipoSanguineo"));
+                paciente.setSexo(rs.getString("sexo"));
+                paciente.setCpfCnpj(rs.getString("cpfCnpj"));
+                paciente.setRgInscricaoEstadual(rs.getString("rgInscricaoEstadual"));
+                paciente.setFone1(rs.getString("fone1"));
+                paciente.setFone2(rs.getString("fone2"));
+                paciente.setEmail(rs.getString("email"));
+                paciente.setCep(rs.getString("cep"));
+                paciente.setCidade(rs.getString("cidade"));
+                paciente.setBairro(rs.getString("bairro"));
+                paciente.setLogradouro(rs.getString("logradouro"));
+                paciente.setComplemento(rs.getString("complemento"));
+                paciente.setDataCadastro(rs.getString("dataCadastro"));
+                pacientes.add(paciente);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            ConnectionFactory.closeConnection(conexao, pstm, resultado);
-            return listaPaciente;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao recuperar pacientes", e);
         }
+        return pacientes;
     }
 
-    @Override
-    public Paciente retrieve(int pk) {
-        Connection conexao = ConnectionFactory.getConnection();
-        PreparedStatement pstm = null;
-        ResultSet resultado = null;
-        Paciente paciente = new Paciente();
+    public Paciente retrieve(int id) {
+        Paciente paciente = null;
+        String sql = "SELECT * FROM paciente WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        String sqlInstrucao = "Select id, tipoSanguineo, sexo, nomeSocial "
-                + "From paciente Where id = ?";
-
-        try {
-            pstm = conexao.prepareStatement(sqlInstrucao);
-            pstm.setInt(1, pk);
-            resultado = pstm.executeQuery();
-            if (resultado.next()) {
-                paciente.setId(resultado.getInt("id"));
-                paciente.setTipoSanguineo(resultado.getString("tipoSanguineo"));
-                paciente.setSexo(resultado.getString("sexo"));
-                paciente.setNomeSocial(resultado.getString("nomeSocial"));
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    paciente = new Paciente();
+                    paciente.setId(rs.getInt("id"));
+                    paciente.setNome(rs.getString("nome"));
+                    paciente.setTipoSanguineo(rs.getString("tipoSanguineo"));
+                    paciente.setSexo(rs.getString("sexo"));
+                    paciente.setCpfCnpj(rs.getString("cpfCnpj"));
+                    paciente.setRgInscricaoEstadual(rs.getString("rgInscricaoEstadual"));
+                    paciente.setFone1(rs.getString("fone1"));
+                    paciente.setFone2(rs.getString("fone2"));
+                    paciente.setEmail(rs.getString("email"));
+                    paciente.setCep(rs.getString("cep"));
+                    paciente.setCidade(rs.getString("cidade"));
+                    paciente.setBairro(rs.getString("bairro"));
+                    paciente.setLogradouro(rs.getString("logradouro"));
+                    paciente.setComplemento(rs.getString("complemento"));
+                    paciente.setDataCadastro(rs.getString("dataCadastro"));
+                }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            ConnectionFactory.closeConnection(conexao, pstm, resultado);
-            return paciente;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao recuperar paciente", e);
         }
+        return paciente;
     }
 
-    @Override
     public List<Paciente> retrieve(String parametro, String atributo) {
-        Connection conexao = ConnectionFactory.getConnection();
-        PreparedStatement pstm = null;
-        ResultSet resultado = null;
-        List<Paciente> listaPaciente = new ArrayList<>();
+        List<Paciente> pacientes = new ArrayList<>();
+        String sql = "SELECT * FROM paciente WHERE " + atributo + " = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        String sqlInstrucao = "Select id, tipoSanguineo, sexo, nomeSocial "
-                + "From paciente Where " + atributo + " like ?";
-
-        try {
-            pstm = conexao.prepareStatement(sqlInstrucao);
-            pstm.setString(1, "%" + parametro + "%");
-            resultado = pstm.executeQuery();
-            while (resultado.next()) {
-                Paciente paciente = new Paciente();
-                paciente.setId(resultado.getInt("id"));
-                paciente.setTipoSanguineo(resultado.getString("tipoSanguineo"));
-                paciente.setSexo(resultado.getString("sexo"));
-                paciente.setNomeSocial(resultado.getString("nomeSocial"));
-                listaPaciente.add(paciente);
+            stmt.setString(1, parametro);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Paciente paciente = new Paciente();
+                    paciente.setId(rs.getInt("id"));
+                    paciente.setNome(rs.getString("nome"));
+                    paciente.setTipoSanguineo(rs.getString("tipoSanguineo"));
+                    paciente.setSexo(rs.getString("sexo"));
+                    paciente.setCpfCnpj(rs.getString("cpfCnpj"));
+                    paciente.setRgInscricaoEstadual(rs.getString("rgInscricaoEstadual"));
+                    paciente.setFone1(rs.getString("fone1"));
+                    paciente.setFone2(rs.getString("fone2"));
+                    paciente.setEmail(rs.getString("email"));
+                    paciente.setCep(rs.getString("cep"));
+                    paciente.setCidade(rs.getString("cidade"));
+                    paciente.setBairro(rs.getString("bairro"));
+                    paciente.setLogradouro(rs.getString("logradouro"));
+                    paciente.setComplemento(rs.getString("complemento"));
+                    paciente.setDataCadastro(rs.getString("dataCadastro"));
+                    pacientes.add(paciente);
+                }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            ConnectionFactory.closeConnection(conexao, pstm, resultado);
-            return listaPaciente;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao recuperar pacientes", e);
+        }
+        return pacientes;
+    }
+
+    public void update(Paciente paciente) {
+        String sql = "UPDATE paciente SET tipoSanguineo = ?, sexo = ?, cpfCnpj = ?, rgInscricaoEstadual = ?, fone1 = ?, " +
+                     "fone2 = ?, email = ?, cep = ?, cidade = ?, bairro = ?, logradouro = ?, " +
+                     "complemento = ?, dataCadastro = ? WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, paciente.getTipoSanguineo());
+            stmt.setString(2, paciente.getNome());
+            stmt.setString(3, paciente.getSexo());
+            stmt.setString(4, paciente.getCpfCnpj());
+            stmt.setString(5, paciente.getRgInscricaoEstadual());
+            stmt.setString(6, paciente.getFone1());
+            stmt.setString(7, paciente.getFone2());
+            stmt.setString(8, paciente.getEmail());
+            stmt.setString(9, paciente.getCep());
+            stmt.setString(10, paciente.getCidade());
+            stmt.setString(11, paciente.getBairro());
+            stmt.setString(12, paciente.getLogradouro());
+            stmt.setString(13, paciente.getComplemento());
+            stmt.setString(14, paciente.getDataCadastro());
+            stmt.setInt(15, paciente.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar paciente", e);
         }
     }
 
-    @Override
-    public void update(Paciente objeto) {
-        Connection conexao = ConnectionFactory.getConnection();
-        String sqlInstrucao = "Update paciente "
-                + "set tipoSanguineo = ?, "
-                + "sexo = ?, "
-                + "nomeSocial = ? "
-                + "Where id = ?";
-        PreparedStatement pstm = null;
-        try {
-            pstm = conexao.prepareStatement(sqlInstrucao);
-            pstm.setString(1, objeto.getTipoSanguineo());
-            pstm.setString(2, objeto.getSexo());
-            pstm.setString(3, objeto.getNomeSocial());
-            pstm.setInt(4, objeto.getId());
-            pstm.execute();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } finally {
-            ConnectionFactory.closeConnection(conexao, pstm, null);
-        }
-    }
+    public void delete(int id) {
+        String sql = "DELETE FROM paciente WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    @Override
-    public void delete(Paciente objeto) {
-        throw new UnsupportedOperationException("Not supported yet.");
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao excluir paciente", e);
+        }
     }
 }
